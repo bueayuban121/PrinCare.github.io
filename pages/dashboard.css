@@ -1,0 +1,313 @@
+/* ==========================================
+   PrinCare — Dashboard Styles
+   ========================================== */
+
+/* ── Greeting Section ── */
+.dashboard-greeting {
+    background: linear-gradient(135deg, #1B4F6B 0%, #2C6E8A 40%, #4A90B8 100%);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    color: white;
+    margin-bottom: var(--space-8);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-greeting::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -5%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.greeting-content {
+    position: relative;
+    z-index: 1;
+}
+
+.greeting-hello {
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+    margin-bottom: var(--space-1);
+}
+
+.greeting-name {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-2);
+}
+
+.greeting-date {
+    font-size: var(--font-size-base);
+    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.greeting-stats {
+    display: flex;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+}
+
+.greeting-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.greeting-stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.greeting-stat-label {
+    font-size: var(--font-size-xs);
+    opacity: 0.7;
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+    margin-bottom: var(--space-8);
+}
+
+/* ── Dashboard Grid ── */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.dashboard-grid-equal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+/* ── Today Schedule ── */
+.today-schedule {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.schedule-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    border-left: 3px solid transparent;
+}
+
+.schedule-item:hover {
+    background: var(--color-primary-lightest);
+}
+
+.schedule-item.morning {
+    border-left-color: var(--shift-morning);
+}
+
+.schedule-item.afternoon {
+    border-left-color: var(--shift-afternoon);
+}
+
+.schedule-item.night {
+    border-left-color: var(--shift-night);
+}
+
+.schedule-item.er {
+    border-left-color: var(--shift-er);
+}
+
+.schedule-item.icu {
+    border-left-color: var(--shift-icu);
+}
+
+.schedule-item.oncall {
+    border-left-color: var(--shift-oncall);
+}
+
+.schedule-item-time {
+    min-width: 80px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+}
+
+.schedule-item-info {
+    flex: 1;
+}
+
+.schedule-item-doctor {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+}
+
+.schedule-item-dept {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+/* ── Alert Card ── */
+.alert-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-danger-bg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+    border: 1px solid rgba(252, 129, 129, 0.2);
+}
+
+.alert-card-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.alert-card-content h5 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: #9B2C2C;
+    margin-bottom: var(--space-1);
+}
+
+.alert-card-content p {
+    font-size: var(--font-size-xs);
+    color: #C53030;
+}
+
+/* ── Pending Requests ── */
+.pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.pending-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.pending-item:hover {
+    background: var(--color-primary-lightest);
+}
+
+.pending-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.pending-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.pending-item-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pending-item-sub {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.pending-item-actions {
+    display: flex;
+    gap: var(--space-1);
+}
+
+/* ── Chart Container ── */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.donut-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-top: var(--space-4);
+}
+
+.donut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.donut-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid-equal {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .greeting-stats {
+        flex-wrap: wrap;
+        gap: var(--space-4);
+    }
+
+    .dashboard-greeting {
+        padding: var(--space-6);
+    }
+}

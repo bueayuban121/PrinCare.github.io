@@ -1,0 +1,108 @@
+/* PrinCare — Notifications Page */
+
+.notif-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.notif-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-light);
+    transition: all var(--transition-base);
+    cursor: pointer;
+}
+
+.notif-item:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.notif-item.unread {
+    background: var(--color-primary-lightest);
+    border-color: var(--color-primary-lighter);
+}
+
+.notif-item.unread::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 6px;
+}
+
+.notif-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    background: var(--color-surface);
+}
+
+.notif-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-title {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-1);
+}
+
+.notif-message {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+.notif-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+}
+
+/* Settings Section */
+.notif-settings {
+    margin-top: var(--space-8);
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.settings-row:last-child {
+    border-bottom: none;
+}
+
+.settings-row-info h5 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-1);
+}
+
+.settings-row-info p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}

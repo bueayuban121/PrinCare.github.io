@@ -1,0 +1,87 @@
+/* PrinCare — Profile Page */
+
+.profile-page {
+    max-width: 800px;
+}
+
+.profile-banner {
+    background: linear-gradient(135deg, #1B4F6B 0%, #2C6E8A 40%, #4A90B8 100%);
+    border-radius: var(--radius-xl);
+    padding: var(--space-10) var(--space-8);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-banner::after {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.profile-banner-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-banner-info h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-1);
+    color: white;
+}
+
+.profile-banner-info p {
+    opacity: 0.8;
+    font-size: var(--font-size-base);
+}
+
+.profile-banner-info .badge {
+    margin-top: var(--space-2);
+}
+
+.profile-form-section {
+    margin-bottom: var(--space-8);
+}
+
+.profile-form-section h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.profile-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .profile-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-form-grid {
+        grid-template-columns: 1fr;
+    }
+}

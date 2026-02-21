@@ -1,0 +1,112 @@
+/* ==========================================
+   PrinCare Design System — CSS Variables
+   Earth-tone Blue, Clean, Minimal
+   ========================================== */
+
+:root {
+  /* ── Primary Colors ── */
+  --color-primary: #4A90B8;
+  --color-primary-light: #6BB0D6;
+  --color-primary-lighter: #A8D4EA;
+  --color-primary-lightest: #DBF0FA;
+  --color-primary-dark: #2C6E8A;
+  --color-primary-darker: #1B4F6B;
+
+  /* ── Accent / Teal ── */
+  --color-accent: #5AAFA0;
+  --color-accent-light: #7FC8BB;
+  --color-accent-lighter: #C5E8E2;
+
+  /* ── Earth Tones ── */
+  --color-sand: #F7F3EE;
+  --color-sand-dark: #E8E0D6;
+  --color-warm-gray: #B8AFA5;
+  --color-earth: #C4B59B;
+
+  /* ── Neutrals ── */
+  --color-white: #FFFFFF;
+  --color-bg: #F4F6F9;
+  --color-bg-card: #FFFFFF;
+  --color-surface: #FAFBFC;
+  --color-border: #E2E8F0;
+  --color-border-light: #EEF2F7;
+  --color-text-primary: #2D3748;
+  --color-text-secondary: #718096;
+  --color-text-muted: #A0AEC0;
+  --color-text-inverse: #FFFFFF;
+
+  /* ── Semantic ── */
+  --color-success: #68D391;
+  --color-success-bg: #F0FFF4;
+  --color-warning: #F6C547;
+  --color-warning-bg: #FFFFF0;
+  --color-danger: #FC8181;
+  --color-danger-bg: #FFF5F5;
+  --color-info: #63B3ED;
+  --color-info-bg: #EBF8FF;
+
+  /* ── Shift Colors ── */
+  --shift-morning: #63B3ED;
+  --shift-afternoon: #F6AD55;
+  --shift-night: #9F7AEA;
+  --shift-opd: #68D391;
+  --shift-er: #FC8181;
+  --shift-icu: #F687B3;
+  --shift-oncall: #4FD1C5;
+
+  /* ── Typography ── */
+  --font-primary: 'Inter', 'Sarabun', sans-serif;
+  --font-thai: 'Sarabun', 'Inter', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height: 1.6;
+
+  /* ── Spacing ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* ── Radius (soft, rounded) ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* ── Transitions ── */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.35s ease;
+
+  /* ── Layout ── */
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 72px;
+  --topbar-height: 64px;
+  --content-max-width: 1400px;
+}

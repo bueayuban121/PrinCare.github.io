@@ -1,0 +1,124 @@
+/* ==========================================
+   PrinCare — Requests Page Styles
+   ========================================== */
+
+.requests-header-tabs {
+    margin-bottom: var(--space-6);
+}
+
+.request-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.request-card {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    transition: all var(--transition-base);
+}
+
+.request-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.request-type-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.request-type-icon.leave {
+    background: var(--color-warning-bg);
+}
+
+.request-type-icon.swap {
+    background: var(--color-info-bg);
+}
+
+.request-type-icon.replacement {
+    background: var(--color-danger-bg);
+}
+
+.request-body {
+    flex: 1;
+}
+
+.request-title {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-md);
+    margin-bottom: var(--space-1);
+}
+
+.request-meta {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+}
+
+.request-reason {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    background: var(--color-surface);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}
+
+.request-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.request-swap-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    background: var(--color-info-bg);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+}
+
+.swap-arrow {
+    font-size: 1.2rem;
+    color: var(--color-primary);
+}
+
+/* New Request Modal */
+.new-request-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .request-card {
+        flex-direction: column;
+    }
+
+    .request-actions {
+        align-self: flex-end;
+    }
+
+    .new-request-form .form-row {
+        grid-template-columns: 1fr;
+    }
+}

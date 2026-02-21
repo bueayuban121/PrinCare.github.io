@@ -1,0 +1,314 @@
+/* ==========================================
+   PrinCare — Schedule Page Styles
+   ========================================== */
+
+.schedule-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.schedule-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.schedule-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.month-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.month-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+}
+
+.month-nav-btn:hover {
+    background: var(--color-primary-lightest);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.month-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    min-width: 180px;
+    text-align: center;
+}
+
+/* ── Calendar Grid ── */
+.calendar {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-light);
+    overflow: hidden;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: var(--color-surface);
+    border-bottom: 2px solid var(--color-border-light);
+}
+
+.calendar-header-cell {
+    padding: 12px;
+    text-align: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+}
+
+.calendar-header-cell:first-child {
+    color: var(--color-danger);
+}
+
+.calendar-header-cell:last-child {
+    color: var(--color-primary);
+}
+
+.calendar-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-cell {
+    min-height: 120px;
+    padding: 8px;
+    border-right: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
+    transition: background var(--transition-fast);
+    cursor: pointer;
+    position: relative;
+}
+
+.calendar-cell:nth-child(7n) {
+    border-right: none;
+}
+
+.calendar-cell:hover {
+    background: var(--color-primary-lightest);
+}
+
+.calendar-cell.other-month {
+    background: var(--color-surface);
+    opacity: 0.4;
+}
+
+.calendar-cell.today {
+    background: rgba(74, 144, 184, 0.05);
+}
+
+.calendar-cell.today .cell-date {
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-full);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-cell.holiday .cell-date {
+    color: var(--color-danger);
+}
+
+.cell-date {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: 4px;
+    color: var(--color-text-primary);
+}
+
+.cell-date.sunday {
+    color: var(--color-danger);
+}
+
+.cell-date.saturday {
+    color: var(--color-primary);
+}
+
+.cell-shifts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cell-shift {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: var(--font-weight-medium);
+}
+
+.cell-shift.morning {
+    background: rgba(99, 179, 237, 0.15);
+    color: #2B6CB0;
+}
+
+.cell-shift.afternoon {
+    background: rgba(246, 173, 85, 0.15);
+    color: #975A16;
+}
+
+.cell-shift.night {
+    background: rgba(159, 122, 234, 0.15);
+    color: #6B46C1;
+}
+
+.cell-shift.er {
+    background: rgba(252, 129, 129, 0.15);
+    color: #C53030;
+}
+
+.cell-shift.opd {
+    background: rgba(104, 211, 145, 0.15);
+    color: #276749;
+}
+
+.cell-shift.icu {
+    background: rgba(246, 135, 179, 0.15);
+    color: #97266D;
+}
+
+.cell-shift.oncall {
+    background: rgba(79, 209, 197, 0.15);
+    color: #234E52;
+}
+
+.cell-more {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    padding: 1px 6px;
+    cursor: pointer;
+}
+
+.cell-holiday {
+    font-size: 9px;
+    color: var(--color-danger);
+    padding: 1px 4px;
+    background: var(--color-danger-bg);
+    border-radius: 4px;
+    margin-bottom: 2px;
+}
+
+/* ── Shift Legend ── */
+.shift-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border-light);
+}
+
+.shift-legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.shift-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-sm);
+}
+
+/* ── Rules Panel ── */
+.rules-panel {
+    margin-top: var(--space-6);
+}
+
+.rule-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+}
+
+.rule-icon {
+    font-size: 1.2rem;
+}
+
+.rule-value {
+    margin-left: auto;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+}
+
+/* Conflict Alert */
+.conflict-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-danger-bg);
+    border: 1px solid rgba(252, 129, 129, 0.2);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+}
+
+.conflict-alert-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.conflict-alert h5 {
+    font-size: var(--font-size-sm);
+    color: #9B2C2C;
+}
+
+.conflict-alert p {
+    font-size: var(--font-size-xs);
+    color: #C53030;
+    margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+    .calendar-cell {
+        min-height: 80px;
+        padding: 4px;
+    }
+
+    .cell-shift {
+        font-size: 8px;
+        padding: 1px 3px;
+    }
+
+    .calendar-header-cell {
+        padding: 8px 4px;
+        font-size: var(--font-size-xs);
+    }
+}
