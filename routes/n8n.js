@@ -4,7 +4,7 @@ const router = express.Router();
 // GET /api/n8n/upcoming-shifts
 // Returns schedule for the next N days (default 7), joined with doctor emails.
 // Useful for sending automated shift reminders.
-router.get('/upcoming-shifts', (req, res) => {
+router.get('/upcoming-shifts', async (req, res) => {
     try {
         const days = parseInt(req.query.days) || 7;
 
@@ -22,7 +22,7 @@ router.get('/upcoming-shifts', (req, res) => {
         end.setDate(end.getDate() + days);
         const endStr = getThaiDateStr(end);
 
-        const stmt = req.app.locals.db.prepare(`
+        const sql = `
             SELECT 
                 s.date,
                 d.name as doctor_name,
@@ -34,17 +34,17 @@ router.get('/upcoming-shifts', (req, res) => {
             FROM schedules s
             JOIN doctors d ON s.doctor_id = d.id
             JOIN shift_types st ON s.shift_id = st.id
-            WHERE s.date >= ? AND s.date <= ?
+            WHERE s.date >= $1 AND s.date <= $2
             ORDER BY s.date ASC, st.name ASC
-        `);
+        `;
 
-        const shifts = stmt.all(startStr, endStr);
+        const { rows } = await req.app.locals.db.query(sql, [startStr, endStr]);
 
         res.json({
             success: true,
-            count: shifts.length,
+            count: rows.length,
             dateRange: { start: startStr, end: endStr },
-            data: shifts
+            data: rows
         });
     } catch (error) {
         console.error('n8n API error:', error);

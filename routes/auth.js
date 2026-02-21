@@ -22,39 +22,51 @@ function authMiddleware(req, res, next) {
 }
 
 // POST /api/auth/login
-router.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'กรุณากรอกอีเมลและรหัสผ่าน' });
+router.post('/login', async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) return res.status(400).json({ error: 'กรุณากรอกอีเมลและรหัสผ่าน' });
 
-    const db = req.app.locals.db;
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-    if (!user) return res.status(401).json({ error: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+        const db = req.app.locals.db;
+        const { rows } = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        const user = rows[0];
 
-    const valid = bcrypt.compareSync(password, user.password);
-    if (!valid) return res.status(401).json({ error: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+        if (!user) return res.status(401).json({ error: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
 
-    const token = jwt.sign(
-        { id: user.id, email: user.email, role: user.role, name: user.name },
-        JWT_SECRET,
-        { expiresIn: '24h' }
-    );
+        const valid = bcrypt.compareSync(password, user.password);
+        if (!valid) return res.status(401).json({ error: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
 
-    res.json({
-        token,
-        user: {
-            id: user.id, name: user.name, name_en: user.name_en, email: user.email,
-            role: user.role, department: user.department, position: user.position,
-            avatar: user.avatar, phone: user.phone
-        }
-    });
+        const token = jwt.sign(
+            { id: user.id, email: user.email, role: user.role, name: user.name },
+            JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            token,
+            user: {
+                id: user.id, name: user.name, name_en: user.name_en, email: user.email,
+                role: user.role, department: user.department, position: user.position,
+                avatar: user.avatar, phone: user.phone
+            }
+        });
+    } catch (e) {
+        next(e);
+    }
 });
 
 // GET /api/auth/me
-router.get('/me', authMiddleware, (req, res) => {
-    const db = req.app.locals.db;
-    const user = db.prepare('SELECT id, name, name_en, email, role, department, position, avatar, phone FROM users WHERE id = ?').get(req.user.id);
-    if (!user) return res.status(404).json({ error: 'ไม่พบผู้ใช้' });
-    res.json(user);
+router.get('/me', authMiddleware, async (req, res, next) => {
+    try {
+        const db = req.app.locals.db;
+        const { rows } = await db.query('SELECT id, name, name_en, email, role, department, position, avatar, phone FROM users WHERE id = $1', [req.user.id]);
+        const user = rows[0];
+
+        if (!user) return res.status(404).json({ error: 'ไม่พบผู้ใช้' });
+        res.json(user);
+    } catch (e) {
+        next(e);
+    }
 });
 
 module.exports = router;

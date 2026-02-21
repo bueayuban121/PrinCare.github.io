@@ -6,3 +6,4 @@ princare.db
 princare.db-shm
 princare.db-wal
 *.db*
+.env
