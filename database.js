@@ -13,6 +13,7 @@ async function initDatabase() {
 
   pool = new Pool({
     connectionString,
+    connectionTimeoutMillis: 5000, // Prevet infinite hang if IPv6/Port is blocked
     // Require SSL for remote connections, disable for localhost
     ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
   });
