@@ -18,6 +18,12 @@ async function initDatabase() {
     ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
   });
 
+  // Catch background pool errors so they don't crash the Node.js process (Exit Status 1)
+  pool.on('error', (err, client) => {
+    console.error('Unexpected error on idle PostgreSQL client', err);
+    // Don't exit process here! Let Express stay alive.
+  });
+
   console.log('Connecting to PostgreSQL database...');
 
   // ── Create Tables ──
