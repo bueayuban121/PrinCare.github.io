@@ -8,26 +8,23 @@ const bcrypt = require('bcryptjs');
 let pool;
 
 async function initDatabase() {
-  // Determine connection string from env (Render/Supabase) or use local default
-  const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/princare';
+  let connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/princare';
 
-  pool = new Pool({
-    connectionString,
-    connectionTimeoutMillis: 5000, // Prevet infinite hang if IPv6/Port is blocked
-    // Require SSL for remote connections, disable for localhost
-    ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
-  });
+  try {
+    pool = new Pool({
+      connectionString,
+      connectionTimeoutMillis: 5000, // Prevent infinite hang
+      ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
+    });
 
-  // Catch background pool errors so they don't crash the Node.js process (Exit Status 1)
-  pool.on('error', (err, client) => {
-    console.error('Unexpected error on idle PostgreSQL client', err);
-    // Don't exit process here! Let Express stay alive.
-  });
+    pool.on('error', (err, client) => {
+      console.error('Unexpected error on idle PostgreSQL client', err);
+    });
 
-  console.log('Connecting to PostgreSQL database...');
+    console.log('Connecting to PostgreSQL database...');
 
-  // ── Create Tables ──
-  const schema = `
+    // ── Create Tables ──
+    const schema = `
         CREATE TABLE IF NOT EXISTS users (
             id TEXT PRIMARY KEY,
             email TEXT UNIQUE NOT NULL,
@@ -128,7 +125,6 @@ async function initDatabase() {
         );
     `;
 
-  try {
     await pool.query(schema);
     console.log('PostgreSQL schema initialized.');
 
@@ -144,7 +140,7 @@ async function initDatabase() {
       console.log(`Database already has ${userCount} users. Skipping seed.`);
     }
   } catch (err) {
-    console.error('Failed to initialize or seed database:', err);
+    console.error('Failed to initialize or seed database:', err.message);
   }
 
   return pool;
