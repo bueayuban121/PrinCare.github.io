@@ -31,18 +31,25 @@ app.use('/api/profile', require('./routes/profile'));
 app.use('/api/n8n', require('./routes/n8n'));
 
 // ── Static files (after API routes) ──
-app.use('/src', express.static(path.join(__dirname, 'src')));
-app.use('/pages', express.static(path.join(__dirname, 'pages')));
-
-// Serve dist if exists (production build), else project root
 const distPath = path.join(__dirname, 'dist');
 if (fs.existsSync(distPath)) {
+    // In Production: Serve compiled frontend from 'dist'
     app.use(express.static(distPath));
+    // Serve index.html as fallback for SPA routing if needed
+    app.get('*', (req, res) => {
+        if (!req.path.startsWith('/api')) {
+            res.sendFile(path.join(distPath, 'index.html'));
+        }
+    });
+} else {
+    // In Development: Serve raw files (usually handled by Vite on port 3000 though)
+    app.use('/src', express.static(path.join(__dirname, 'src')));
+    app.use('/pages', express.static(path.join(__dirname, 'pages')));
+    app.use(express.static(__dirname, {
+        index: 'index.html',
+        extensions: ['html']
+    }));
 }
-app.use(express.static(__dirname, {
-    index: 'index.html',
-    extensions: ['html']
-}));
 
 app.listen(PORT, () => {
     console.log(`PrinCare server running on http://localhost:${PORT}`);
