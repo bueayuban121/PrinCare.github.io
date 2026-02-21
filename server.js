@@ -17,11 +17,22 @@ const PORT = process.env.PORT || 3001;
 // Initialize database asynchronously before setting up routes
 async function startServer() {
     try {
+        console.log('Starting server initialization...');
+        if (!process.env.DATABASE_URL) {
+            console.warn('WARNING: DATABASE_URL environment variable is not set. Falling back to localhost.');
+        } else {
+            console.log('DATABASE_URL detected. Connecting to PostgreSQL...');
+        }
+
         const pool = await initDatabase();
         app.locals.db = pool;
+        console.log('Database connected successfully and attached to app locals.');
     } catch (err) {
-        console.error('Fatal: Failed to connect to database', err);
-        process.exit(1);
+        console.error('FATAL ERROR: Failed to connect to database during startup.');
+        console.error('Error Details:', err.message);
+        console.error('Stack Trace:', err.stack);
+        // Don't exit process in Render immediately, let the port bind so we can see the logs
+        // process.exit(1);
     }
 
     // Middleware
