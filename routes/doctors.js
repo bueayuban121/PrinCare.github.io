@@ -23,14 +23,14 @@ router.get('/:id', authMiddleware, (req, res) => {
 // POST /api/doctors
 router.post('/', authMiddleware, (req, res) => {
     const db = req.app.locals.db;
-    const { name, dept, position, seniority, specialty, license, phone, constraints_note } = req.body;
+    const { name, email, dept, position, seniority, specialty, license, phone, constraints_note } = req.body;
     if (!name || !dept) return res.status(400).json({ error: 'กรุณากรอกชื่อและแผนก' });
 
     const id = 'D' + String(Date.now()).slice(-6);
     const avatar = name.replace(/^(นพ\.|พญ\.)/, '').trim().substring(0, 2);
 
-    db.prepare('INSERT INTO doctors (id, name, dept, position, seniority, specialty, license, status, avatar, phone, constraints_note) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
-        .run(id, name, dept, position || '', seniority || '', specialty || '', license || '', 'active', avatar, phone || '', constraints_note || '');
+    db.prepare('INSERT INTO doctors (id, name, email, dept, position, seniority, specialty, license, status, avatar, phone, constraints_note) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
+        .run(id, name, email || '', dept, position || '', seniority || '', specialty || '', license || '', 'active', avatar, phone || '', constraints_note || '');
 
     // Audit
     db.prepare('INSERT INTO audit_log (id, action, user, detail, timestamp) VALUES (?,?,?,?,?)')
@@ -42,10 +42,10 @@ router.post('/', authMiddleware, (req, res) => {
 // PUT /api/doctors/:id
 router.put('/:id', authMiddleware, (req, res) => {
     const db = req.app.locals.db;
-    const { name, dept, position, seniority, specialty, license, status, phone, constraints_note } = req.body;
+    const { name, email, dept, position, seniority, specialty, license, status, phone, constraints_note } = req.body;
 
-    db.prepare('UPDATE doctors SET name=?, dept=?, position=?, seniority=?, specialty=?, license=?, status=?, phone=?, constraints_note=? WHERE id=?')
-        .run(name, dept, position, seniority, specialty, license, status, phone, constraints_note || '', req.params.id);
+    db.prepare('UPDATE doctors SET name=?, email=?, dept=?, position=?, seniority=?, specialty=?, license=?, status=?, phone=?, constraints_note=? WHERE id=?')
+        .run(name, email || '', dept, position, seniority, specialty, license, status, phone, constraints_note || '', req.params.id);
 
     res.json({ message: 'แก้ไขข้อมูลแพทย์สำเร็จ' });
 });

@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
 
       <div class="charts-row animate-fade-in-up delay-5">
-        <div class="card chart-card"><div class="card-header"><h3>ชั่วโมงทำงานรายแผนก</h3></div><div class="chart-container"><canvas id="deptChart"></canvas></div></div>
+        <div class="card chart-card"><div class="card-header"><h3>ชั่วโมงทำงานบุคคล (สัปดาห์นี้)</h3></div><div class="chart-container"><canvas id="workloadChart"></canvas></div></div>
         <div class="card chart-card"><div class="card-header"><h3>สัดส่วนแพทย์ตามแผนก</h3></div><div class="chart-container"><canvas id="donutChart"></canvas></div></div>
       </div>
     `;
@@ -113,14 +113,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('[data-target]').forEach(el => animateNumber(el, parseInt(el.dataset.target)));
 
     setTimeout(() => {
-      drawBarChart(document.getElementById('deptChart'), {
-        labels: departments.map(d => d.name.substring(0, 4)),
-        values: [42, 36, 28, 22, 18, 45, 20, 12].slice(0, departments.length),
-        colors: departments.map(d => d.color)
+      drawBarChart(document.getElementById('workloadChart'), {
+        labels: stats.workloadData.map(w => w.name.split(' ')[0]),
+        values: stats.workloadData.map(w => w.hours),
+        colors: stats.workloadData.map((w, i) => ['#4A90B8', '#5AAFA0', '#F6AD55', '#9F7AEA', '#FC8181'][i % 5])
       });
       drawDonutChart(document.getElementById('donutChart'), {
-        values: departments.map(d => d.total_doctors),
-        colors: departments.map(d => d.color)
+        values: stats.departments.map(d => d.actual_doctors),
+        colors: stats.departments.map(d => d.color),
+        labels: stats.departments.map(d => d.name)
       });
     }, 400);
 

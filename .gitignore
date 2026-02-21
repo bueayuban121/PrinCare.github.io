@@ -3,3 +3,6 @@ dist/
 .DS_Store
 *.log
 princare.db
+princare.db-shm
+princare.db-wal
+*.db*

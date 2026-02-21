@@ -211,3 +211,4 @@ export function animateNumber(element, target, duration = 1000) {
 
     requestAnimationFrame(update);
 }
+

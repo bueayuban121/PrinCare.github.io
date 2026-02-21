@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="doctor-detail">${icons.star} <span style="vertical-align:middle">${doc.specialty || '-'}</span></div>
                 <div class="doctor-detail">${icons.fileText} <span style="vertical-align:middle">${doc.license || '-'}</span></div>
                 ${doc.phone ? `<div class="doctor-detail">${icons.phoneCall} <span style="vertical-align:middle">${doc.phone}</span></div>` : ''}
+                ${doc.email ? `<div class="doctor-detail">${icons.mail} <span style="vertical-align:middle">${doc.email}</span></div>` : ''}
                 ${doc.constraints_note ? `<div class="doctor-constraint">${icons.alert} <span style="vertical-align:middle">${doc.constraints_note}</span></div>` : ''}
               </div>
               <div class="doctor-card-actions">
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="modal-header"><h3>เพิ่มแพทย์ใหม่</h3><button class="modal-close" onclick="closeAddDoctor()">${icons.x}</button></div>
             <form id="addDoctorForm">
               <div class="form-group"><label class="form-label">ชื่อ-นามสกุล</label><input type="text" class="form-input" id="docName" placeholder="นพ./พญ. ..." required /></div>
+              <div class="form-group"><label class="form-label">อีเมล (รับแจ้งเตือน)</label><input type="email" class="form-input" id="docEmail" placeholder="doctor@princare.com" /></div>
               <div class="form-group"><label class="form-label">แผนก</label><select class="form-select" id="docDept">${departments.map(d => `<option value="${d.name}">${d.name}</option>`).join('')}</select></div>
               <div class="form-group"><label class="form-label">ตำแหน่ง</label><input type="text" class="form-input" id="docPosition" placeholder="แพทย์ประจำ" /></div>
               <div class="form-group"><label class="form-label">ความชำนาญ</label><input type="text" class="form-input" id="docSpecialty" /></div>
@@ -61,12 +63,54 @@ document.addEventListener('DOMContentLoaded', async () => {
             </form>
           </div>
         </div>
+
+        <div class="modal-overlay" id="editDoctorModal">
+          <div class="modal" style="max-width:600px;">
+            <div class="modal-header"><h3>แก้ไขข้อมูลแพทย์</h3><button class="modal-close" onclick="closeEditDoctor()">${icons.x}</button></div>
+            <form id="editDoctorForm">
+              <input type="hidden" id="editDocId" />
+              <div class="form-group"><label class="form-label">ชื่อ-นามสกุล</label><input type="text" class="form-input" id="editDocName" required /></div>
+              <div class="form-group"><label class="form-label">อีเมล (รับแจ้งเตือน)</label><input type="email" class="form-input" id="editDocEmail" /></div>
+              <div class="form-group"><label class="form-label">แผนก</label><select class="form-select" id="editDocDept">${departments.map(d => `<option value="${d.name}">${d.name}</option>`).join('')}</select></div>
+              <div class="form-group"><label class="form-label">ตำแหน่ง</label><input type="text" class="form-input" id="editDocPosition" /></div>
+              <div class="form-group"><label class="form-label">ความชำนาญ</label><input type="text" class="form-input" id="editDocSpecialty" /></div>
+              <div class="form-group"><label class="form-label">เลขใบอนุญาต</label><input type="text" class="form-input" id="editDocLicense" /></div>
+              <div class="form-group"><label class="form-label">เบอร์โทร</label><input type="text" class="form-input" id="editDocPhone" /></div>
+              <div class="form-group"><label class="form-label">สถานะ</label>
+                <select class="form-select" id="editDocStatus">
+                  <option value="active">พร้อมปฏิบัติงาน</option>
+                  <option value="on-leave">ลาพัก</option>
+                  <option value="inactive">พ้นสภาพ</option>
+                </select>
+              </div>
+              <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeEditDoctor()">ยกเลิก</button><button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button></div>
+            </form>
+          </div>
+        </div>
       `;
       document.getElementById('addDoctorForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
-          await apiPost('/doctors', { name: document.getElementById('docName').value, dept: document.getElementById('docDept').value, position: document.getElementById('docPosition').value, specialty: document.getElementById('docSpecialty').value, license: document.getElementById('docLicense').value, phone: document.getElementById('docPhone').value });
+          await apiPost('/doctors', { name: document.getElementById('docName').value, email: document.getElementById('docEmail').value, dept: document.getElementById('docDept').value, position: document.getElementById('docPosition').value, specialty: document.getElementById('docSpecialty').value, license: document.getElementById('docLicense').value, phone: document.getElementById('docPhone').value });
           closeAddDoctor(); render();
+        } catch (err) { alert(err.message); }
+      });
+
+      document.getElementById('editDoctorForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          const id = document.getElementById('editDocId').value;
+          await apiPut(`/doctors/${id}`, {
+            name: document.getElementById('editDocName').value,
+            email: document.getElementById('editDocEmail').value,
+            dept: document.getElementById('editDocDept').value,
+            position: document.getElementById('editDocPosition').value,
+            specialty: document.getElementById('editDocSpecialty').value,
+            license: document.getElementById('editDocLicense').value,
+            phone: document.getElementById('editDocPhone').value,
+            status: document.getElementById('editDocStatus').value
+          });
+          closeEditDoctor(); render();
         } catch (err) { alert(err.message); }
       });
     } catch (err) { content.innerHTML = `<div class="card" style="padding:40px;text-align:center;"><p>${err.message}</p></div>`; }
@@ -75,5 +119,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.showAddDoctor = () => document.getElementById('addDoctorModal')?.classList.add('active');
   window.closeAddDoctor = () => document.getElementById('addDoctorModal')?.classList.remove('active');
   window.deleteDoctor = async (id, name) => { if (confirm(`ต้องการลบ ${name} ?`)) { await apiDelete(`/doctors/${id}`); render(); } };
-  window.editDoctor = (id) => alert('ฟีเจอร์แก้ไขจะมาเร็วๆ นี้');
+
+  window.editDoctor = async (id) => {
+    try {
+      const doc = await apiGet(`/doctors/${id}`);
+      document.getElementById('editDocId').value = doc.id;
+      document.getElementById('editDocName').value = doc.name || '';
+      document.getElementById('editDocEmail').value = doc.email || '';
+      document.getElementById('editDocDept').value = doc.dept || '';
+      document.getElementById('editDocPosition').value = doc.position || '';
+      document.getElementById('editDocSpecialty').value = doc.specialty || '';
+      document.getElementById('editDocLicense').value = doc.license || '';
+      document.getElementById('editDocPhone').value = doc.phone || '';
+      document.getElementById('editDocStatus').value = doc.status || 'active';
+      document.getElementById('editDoctorModal')?.classList.add('active');
+    } catch (err) {
+      alert('Could not load doctor details: ' + err.message);
+    }
+  };
+
+  window.closeEditDoctor = () => document.getElementById('editDoctorModal')?.classList.remove('active');
 });

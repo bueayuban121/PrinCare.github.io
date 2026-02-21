@@ -9,7 +9,7 @@ const fs = require('fs');
 const { initDatabase } = require('./database');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Initialize database
 const db = initDatabase();
@@ -28,6 +28,7 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/profile', require('./routes/profile'));
+app.use('/api/n8n', require('./routes/n8n'));
 
 // ── Static files (after API routes) ──
 app.use('/src', express.static(path.join(__dirname, 'src')));

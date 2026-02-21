@@ -12,7 +12,7 @@ router.get('/stats', authMiddleware, (req, res) => {
     const activeDoctors = db.prepare("SELECT COUNT(*) as c FROM doctors WHERE status='active'").get().c;
     const totalSchedules = db.prepare('SELECT COUNT(*) as c FROM schedules').get().c;
     const pendingRequests = db.prepare("SELECT COUNT(*) as c FROM requests WHERE status='pending'").get().c;
-    const departments = db.prepare('SELECT * FROM departments').all();
+    const departments = db.prepare('SELECT d.*, (SELECT COUNT(*) FROM doctors doc WHERE doc.dept = d.name) as actual_doctors FROM departments d').all();
     const nightShifts = db.prepare("SELECT COUNT(*) as c FROM schedules WHERE shift_id='SH03'").get().c;
 
     res.json({
