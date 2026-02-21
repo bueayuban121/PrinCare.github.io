@@ -30,6 +30,11 @@ app.use('/api/settings', require('./routes/settings'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/n8n', require('./routes/n8n'));
 
+// Catch-all for unhandled /api routes
+app.use('/api', (req, res) => {
+    res.status(404).json({ error: `ไม่พบ API: ${req.method} ${req.path}` });
+});
+
 // ── Static files (after API routes) ──
 const distPath = path.join(__dirname, 'dist');
 if (fs.existsSync(distPath)) {
@@ -50,6 +55,16 @@ if (fs.existsSync(distPath)) {
         extensions: ['html']
     }));
 }
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error('SERVER ERROR:', err);
+    if (req.path.startsWith('/api')) {
+        res.status(500).json({ error: 'ระบบขัดข้อง: ' + err.message });
+    } else {
+        res.status(500).send('<h2>ระบบขัดข้อง</h2><p>' + err.message + '</p>');
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`PrinCare server running on http://localhost:${PORT}`);
