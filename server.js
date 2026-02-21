@@ -66,7 +66,7 @@ async function startServer() {
         // In Production: Serve compiled frontend from 'dist'
         app.use(express.static(distPath));
         // Serve index.html as fallback for SPA routing if needed
-        app.get('*', (req, res) => {
+        app.get(/.*/, (req, res) => {
             if (!req.path.startsWith('/api')) {
                 res.sendFile(path.join(distPath, 'index.html'));
             }
