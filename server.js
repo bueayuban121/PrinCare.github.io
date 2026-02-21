@@ -50,9 +50,14 @@ async function startServer() {
     app.use('/api/profile', require('./routes/profile'));
     app.use('/api/n8n', require('./routes/n8n'));
 
+    // Health Check Endpoint (No DB required)
+    app.get('/api/health', (req, res) => {
+        res.json({ status: 'ok', dbDefined: !!app.locals.db, envSet: !!process.env.DATABASE_URL });
+    });
+
     // Catch-all for unhandled /api routes
     app.use('/api', (req, res) => {
-        res.status(404).json({ error: `ไม่พบ API: ${req.method} ${req.path}` });
+        res.status(404).json({ error: `ไม่พบ API: ${req.method} ${req.originalUrl}` });
     });
 
     // ── Static files (after API routes) ──
@@ -78,11 +83,13 @@ async function startServer() {
 
     // Global Error Handler
     app.use((err, req, res, next) => {
-        console.error('SERVER ERROR:', err);
-        if (req.path.startsWith('/api')) {
-            res.status(500).json({ error: 'ระบบขัดข้อง: ' + err.message });
+        console.error(`[ERROR] ${req.method} ${req.originalUrl}:`, err);
+        if (req.originalUrl && req.originalUrl.startsWith('/api')) {
+            // Force JSON content type to prevent empty responses being parsed as HTML or crashing
+            res.header("Content-Type", 'application/json');
+            res.status(500).json({ error: 'ระบบขัดข้อง: ' + (err.message || 'Unknown Server Error') });
         } else {
-            res.status(500).send('<h2>ระบบขัดข้อง</h2><p>' + err.message + '</p>');
+            res.status(500).send('<h2>ระบบขัดข้อง</h2><p>' + (err.message || 'Unknown Server Error') + '</p>');
         }
     });
 
