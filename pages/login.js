@@ -14,20 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     errorDiv.style.cssText = 'color:#E53E3E;font-size:14px;text-align:center;margin-top:12px;display:none;';
     form.appendChild(errorDiv);
 
-    // Role selector
-    window.selectRole = function (el) {
-        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-        const role = el.dataset.role;
-        const emailInput = document.getElementById('email');
-        const passInput = document.getElementById('password');
-        switch (role) {
-            case 'admin': emailInput.value = 'admin@princare.com'; passInput.value = 'admin123'; break;
-            case 'head': emailInput.value = 'head@princare.com'; passInput.value = 'head123'; break;
-            case 'doctor': emailInput.value = 'doctor@princare.com'; passInput.value = 'doctor123'; break;
-            case 'hr': emailInput.value = 'admin@princare.com'; passInput.value = 'admin123'; break;
-        }
-    };
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();

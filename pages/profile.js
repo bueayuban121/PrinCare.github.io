@@ -4,6 +4,7 @@
 import { initApp } from '../src/js/app.js';
 import { icons } from '../src/js/icons.js';
 import { apiGet, apiPut, requireAuth, getUser, clearAuth, setAuth } from '../src/js/api.js';
+import { getBranchName } from '../src/js/utils.js';
 
 if (!requireAuth()) throw new Error('Not authenticated');
 initApp('profile', 'โปรไฟล์', ['หน้าหลัก', 'โปรไฟล์']);
@@ -20,11 +21,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       <div class="profile-grid">
         <div class="card profile-card animate-fade-in-up delay-1">
-          <div class="profile-avatar-lg">${profile.avatar || 'PC'}</div>
+          <div class="profile-avatar-lg" style="position:relative; overflow:hidden;">
+            ${profile.avatar && profile.avatar.startsWith('data:image') ? `<img src="${profile.avatar}" style="width:100%; height:100%; object-fit:cover;" />` : (profile.avatar || 'PC')}
+            <input type="file" id="avatarUpload" accept="image/*" style="opacity:0; position:absolute; top:0; left:0; width:100%; height:100%; cursor:pointer;" title="เปลี่ยนรูปโปรไฟล์" />
+          </div>
+          <p style="font-size:12px; color:var(--text-muted); margin-top:-10px;">คลิกที่รูปเพื่อเปลี่ยน</p>
           <h3>${profile.name}</h3>
           <p class="text-muted">${profile.name_en || ''}</p>
           <span class="badge badge-primary">${profile.role}</span>
           <div class="profile-meta">
+            <div>${icons.checkCircle} <span style="vertical-align:middle">${getBranchName(profile.branch || 'PSV01')}</span></div>
             <div>${icons.hospital} <span style="vertical-align:middle">${profile.department || '-'}</span></div>
             <div>${icons.star} <span style="vertical-align:middle">${profile.position || '-'}</span></div>
             <div>${icons.mail} <span style="vertical-align:middle">${profile.email}</span></div>
@@ -56,6 +62,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `;
 
+    let currentAvatarBase64 = profile.avatar;
+    document.getElementById('avatarUpload')?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        currentAvatarBase64 = ev.target.result;
+        const avatarEl = document.querySelector('.profile-avatar-lg');
+        avatarEl.innerHTML = `<img src="${currentAvatarBase64}" style="width:100%; height:100%; object-fit:cover;" /><input type="file" id="avatarUpload" accept="image/*" style="opacity:0; position:absolute; top:0; left:0; width:100%; height:100%; cursor:pointer;" title="เปลี่ยนรูปโปรไฟล์" />`;
+        // reattach listener
+        document.getElementById('avatarUpload').addEventListener('change', arguments.callee);
+      };
+      reader.readAsDataURL(file);
+    });
+
     document.getElementById('profileForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       try {
@@ -64,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           name_en: document.getElementById('profNameEn').value,
           email: document.getElementById('profEmail').value,
           phone: document.getElementById('profPhone').value,
+          avatar: currentAvatarBase64
         });
         const user = getUser();
         user.name = document.getElementById('profName').value;

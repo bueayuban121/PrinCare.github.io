@@ -212,3 +212,25 @@ export function animateNumber(element, target, duration = 1000) {
     requestAnimationFrame(update);
 }
 
+export const BRANCHES = [
+    { id: 'PSV01', name: 'โรงพยาบาลพริ้นซ์ สุวรรณภูมิ' },
+    { id: 'PNP02', name: 'โรงพยาบาลพริ้นซ์ ปากน้ำโพ 1' },
+    { id: 'PNP03', name: 'โรงพยาบาลพริ้นซ์ ปากน้ำโพ 2' },
+    { id: 'PUT04', name: 'โรงพยาบาลพริ้นซ์ อุทัยธานี' },
+    { id: 'PVL05', name: 'โรงพยาบาลพิษณุเวช พิษณุโลก' },
+    { id: 'PUT06', name: 'โรงพยาบาลพิษณุเวช อุตรดิตถ์' },
+    { id: 'PPC07', name: 'โรงพยาบาลพิษณุเวช พิจิตร' },
+    { id: 'SLP08', name: 'โรงพยาบาลศิริเวช ลำพูน' },
+    { id: 'PLP09', name: 'โรงพยาบาลพริ้นซ์ ลำพูน' },
+    { id: 'PSK10', name: 'โรงพยาบาลพริ้นซ์ ศรีสะเกษ' },
+    { id: 'PUB11', name: 'โรงพยาบาลพริ้นซ์ อุบลราชธานี' },
+    { id: 'PSK12', name: 'โรงพยาบาลพริ้นซ์ สกลนคร' },
+    { id: 'VHC13', name: 'โรงพยาบาลวิรัชศิลป์ ชุมพร' },
+    { id: 'RPH14', name: 'โรงพยาบาลรวมแพทย์ พิษณุโลก' },
+    { id: 'PMK15', name: 'โรงพยาบาลพริ้นซ์ มุกดาหาร' }
+];
+
+export function getBranchName(id) {
+    const branch = BRANCHES.find(b => b.id === id);
+    return branch ? branch.name : id;
+}

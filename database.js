@@ -32,6 +32,7 @@ async function initDatabase() {
             name TEXT NOT NULL,
             name_en TEXT DEFAULT '',
             role TEXT NOT NULL DEFAULT 'doctor',
+            branch TEXT DEFAULT 'PSV01',
             department TEXT DEFAULT '',
             position TEXT DEFAULT '',
             avatar TEXT DEFAULT '',
@@ -58,6 +59,7 @@ async function initDatabase() {
         CREATE TABLE IF NOT EXISTS doctors (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
+            branch TEXT DEFAULT 'PSV01',
             dept TEXT NOT NULL,
             position TEXT DEFAULT '',
             seniority TEXT DEFAULT '',
@@ -77,6 +79,7 @@ async function initDatabase() {
             doctor_id TEXT NOT NULL,
             shift_id TEXT NOT NULL,
             dept_id TEXT NOT NULL,
+            branch TEXT DEFAULT 'PSV01',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -128,6 +131,24 @@ async function initDatabase() {
     await pool.query(schema);
     console.log('PostgreSQL schema initialized.');
 
+    // Migration for new columns
+    try {
+      await pool.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS branch TEXT DEFAULT 'PSV01'");
+      await pool.query("ALTER TABLE doctors ADD COLUMN IF NOT EXISTS branch TEXT DEFAULT 'PSV01'");
+      await pool.query("ALTER TABLE schedules ADD COLUMN IF NOT EXISTS branch TEXT DEFAULT 'PSV01'");
+
+      // Migrate existing old data to new format
+      await pool.query("UPDATE users SET branch = 'PSV01' WHERE branch = 'สาขาหลัก'");
+      await pool.query("UPDATE doctors SET branch = 'PSV01' WHERE branch = 'สาขาหลัก'");
+      await pool.query("UPDATE schedules SET branch = 'PSV01' WHERE branch = 'สาขาหลัก'");
+
+      await pool.query("UPDATE users SET branch = 'PNP02' WHERE branch = 'สาขารอง'");
+      await pool.query("UPDATE doctors SET branch = 'PNP02' WHERE branch = 'สาขารอง'");
+      await pool.query("UPDATE schedules SET branch = 'PNP02' WHERE branch = 'สาขารอง'");
+    } catch (err) {
+      console.log('Migration note: Column might already exist or not supported.');
+    }
+
     // ── Seed Data ──
     const { rows } = await pool.query('SELECT COUNT(*) as c FROM users');
     const userCount = parseInt(rows[0].c, 10);
@@ -160,9 +181,7 @@ async function seedData(pool) {
   await insertMany(
     'INSERT INTO users (id, email, password, name, name_en, role, department, position, avatar, phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
     [
-      ['U001', 'admin@princare.com', hash('admin123'), 'นพ.สมชาย รักษาดี', 'Dr. Somchai Raksadee', 'admin', 'อายุรกรรม', 'ผู้อำนวยการฝ่ายการแพทย์', 'สร', '081-234-5678'],
-      ['U002', 'head@princare.com', hash('head123'), 'นพ.วิชัย ปัญญาดี', 'Dr. Wichai Panyadee', 'head', 'ศัลยกรรม', 'หัวหน้าแผนก', 'วป', '083-456-7890'],
-      ['U003', 'doctor@princare.com', hash('doctor123'), 'นพ.อนันต์ สุขสมบูรณ์', 'Dr. Anan Suksomboon', 'doctor', 'ฉุกเฉิน (ER)', 'แพทย์ประจำ', 'อส', '085-678-9012'],
+      ['U001', 'admin@princare.com', hash('admin123'), 'นพ.สมชาย รักษาดี', 'Dr. Somchai Raksadee', 'admin', 'อายุรกรรม', 'ผู้อำนวยการฝ่ายการแพทย์', 'สร', '081-234-5678']
     ]
   );
 

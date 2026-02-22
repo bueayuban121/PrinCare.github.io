@@ -4,7 +4,7 @@
 import { initApp } from '../src/js/app.js';
 import { icons } from '../src/js/icons.js';
 import { apiGet, apiPost, apiPut, apiDelete, requireAuth } from '../src/js/api.js';
-import { getStatusBadge } from '../src/js/utils.js';
+import { getStatusBadge, BRANCHES, getBranchName } from '../src/js/utils.js';
 
 if (!requireAuth()) throw new Error('Not authenticated');
 initApp('doctors', 'ข้อมูลแพทย์', ['หน้าหลัก', 'ข้อมูลแพทย์']);
@@ -22,15 +22,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="page-header">
           <div><h1 class="page-title">${icons.userDoctor} <span style="vertical-align:middle">ข้อมูลแพทย์</span></h1>
           <p class="page-subtitle">แพทย์ทั้งหมด ${doctors.length} คน · พร้อมปฏิบัติงาน ${doctors.filter(d => d.status === 'active').length} คน</p></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="showAddDoctor()">${icons.plus} <span style="vertical-align:middle">เพิ่มแพทย์</span></button></div>
+          <div class="page-actions">
+            <div style="display:inline-block; position:relative; margin-right: 12px;">
+              <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); width:16px; height:16px; display:flex;">${icons.search}</span>
+              <input type="text" class="form-input" placeholder="ค้นหาชื่อแพทย์..." oninput="filterDoctors(this.value)" style="padding-left:36px; width:220px;" />
+            </div>
+            <button class="btn btn-primary" onclick="showAddDoctor()">${icons.plus} <span style="vertical-align:middle">เพิ่มแพทย์</span></button>
+          </div>
         </div>
         <div class="doctor-grid">
           ${doctors.map((doc, i) => {
         const status = getStatusBadge(doc.status);
         return `<div class="doctor-card animate-fade-in-up delay-${Math.min(i + 1, 5)}">
               <div class="doctor-card-header">
-                <div class="doctor-avatar">${doc.avatar || '??'}</div>
-                <div><div class="doctor-name">${doc.name}</div><div class="doctor-position">${doc.position}</div></div>
+                <div class="doctor-avatar" style="overflow:hidden;">
+                  ${doc.avatar && doc.avatar.startsWith('data:image') ? `<img src="${doc.avatar}" style="width:100%; height:100%; object-fit:cover;" />` : (doc.avatar || '??')}
+                </div>
+                <div>
+                  <div class="doctor-name">${doc.name}</div>
+                  <div class="doctor-position">${doc.position} &bull; ${getBranchName(doc.branch || 'PSV01')}</div>
+                </div>
                 <span class="badge ${status.class} badge-dot">${status.text}</span>
               </div>
               <div class="doctor-details">
@@ -43,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>
               <div class="doctor-card-actions">
                 <button class="btn btn-sm btn-secondary" onclick="editDoctor('${doc.id}')">${icons.edit} แก้ไข</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteDoctor('${doc.id}','${doc.name}')">${icons.trash} ลบ</button>
+                <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteDoctor('${doc.id}','${doc.name}')">${icons.trash} ลบ</button>
               </div>
             </div>`;
       }).join('')}
@@ -54,7 +65,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             <form id="addDoctorForm">
               <div class="form-group"><label class="form-label">ชื่อ-นามสกุล</label><input type="text" class="form-input" id="docName" placeholder="นพ./พญ. ..." required /></div>
               <div class="form-group"><label class="form-label">อีเมล (รับแจ้งเตือน)</label><input type="email" class="form-input" id="docEmail" placeholder="doctor@princare.com" /></div>
+              <div class="form-group"><label class="form-label">สาขา</label><select class="form-select" id="docBranch">${BRANCHES.map(b => `<option value="${b.id}">${b.id} - ${b.name}</option>`).join('')}</select></div>
               <div class="form-group"><label class="form-label">แผนก</label><select class="form-select" id="docDept">${departments.map(d => `<option value="${d.name}">${d.name}</option>`).join('')}</select></div>
+              <div class="form-group"><label class="form-label">รูปถ่าย (ทางเลือก)</label><input type="file" class="form-input" id="docAvatar" accept="image/*" /></div>
               <div class="form-group"><label class="form-label">ตำแหน่ง</label><input type="text" class="form-input" id="docPosition" placeholder="แพทย์ประจำ" /></div>
               <div class="form-group"><label class="form-label">ความชำนาญ</label><input type="text" class="form-input" id="docSpecialty" /></div>
               <div class="form-group"><label class="form-label">เลขใบอนุญาต</label><input type="text" class="form-input" id="docLicense" placeholder="ว.xxxxx" /></div>
@@ -71,7 +84,9 @@ document.addEventListener('DOMContentLoaded', async () => {
               <input type="hidden" id="editDocId" />
               <div class="form-group"><label class="form-label">ชื่อ-นามสกุล</label><input type="text" class="form-input" id="editDocName" required /></div>
               <div class="form-group"><label class="form-label">อีเมล (รับแจ้งเตือน)</label><input type="email" class="form-input" id="editDocEmail" /></div>
+              <div class="form-group"><label class="form-label">สาขา</label><select class="form-select" id="editDocBranch">${BRANCHES.map(b => `<option value="${b.id}">${b.id} - ${b.name}</option>`).join('')}</select></div>
               <div class="form-group"><label class="form-label">แผนก</label><select class="form-select" id="editDocDept">${departments.map(d => `<option value="${d.name}">${d.name}</option>`).join('')}</select></div>
+              <div class="form-group"><label class="form-label">เปลี่ยนรูปถ่าย (ทางเลือก)</label><input type="file" class="form-input" id="editDocAvatar" accept="image/*" /></div>
               <div class="form-group"><label class="form-label">ตำแหน่ง</label><input type="text" class="form-input" id="editDocPosition" /></div>
               <div class="form-group"><label class="form-label">ความชำนาญ</label><input type="text" class="form-input" id="editDocSpecialty" /></div>
               <div class="form-group"><label class="form-label">เลขใบอนุญาต</label><input type="text" class="form-input" id="editDocLicense" /></div>
@@ -91,7 +106,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('addDoctorForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
-          await apiPost('/doctors', { name: document.getElementById('docName').value, email: document.getElementById('docEmail').value, dept: document.getElementById('docDept').value, position: document.getElementById('docPosition').value, specialty: document.getElementById('docSpecialty').value, license: document.getElementById('docLicense').value, phone: document.getElementById('docPhone').value });
+          const file = document.getElementById('docAvatar').files[0];
+          let avatarBase64 = null;
+          if (file) {
+            const reader = new FileReader();
+            avatarBase64 = await new Promise((req) => { reader.onload = e => req(e.target.result); reader.readAsDataURL(file); });
+          }
+          await apiPost('/doctors', { name: document.getElementById('docName').value, email: document.getElementById('docEmail').value, branch: document.getElementById('docBranch').value, dept: document.getElementById('docDept').value, position: document.getElementById('docPosition').value, specialty: document.getElementById('docSpecialty').value, license: document.getElementById('docLicense').value, phone: document.getElementById('docPhone').value, avatar: avatarBase64 });
           closeAddDoctor(); render();
         } catch (err) { alert(err.message); }
       });
@@ -100,16 +121,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         try {
           const id = document.getElementById('editDocId').value;
-          await apiPut(`/doctors/${id}`, {
+          const file = document.getElementById('editDocAvatar').files[0];
+          let avatarBase64 = null;
+          if (file) {
+            const reader = new FileReader();
+            avatarBase64 = await new Promise((req) => { reader.onload = e => req(e.target.result); reader.readAsDataURL(file); });
+          }
+          let payload = {
             name: document.getElementById('editDocName').value,
             email: document.getElementById('editDocEmail').value,
+            branch: document.getElementById('editDocBranch').value,
             dept: document.getElementById('editDocDept').value,
             position: document.getElementById('editDocPosition').value,
             specialty: document.getElementById('editDocSpecialty').value,
             license: document.getElementById('editDocLicense').value,
             phone: document.getElementById('editDocPhone').value,
             status: document.getElementById('editDocStatus').value
-          });
+          };
+          if (avatarBase64) payload.avatar = avatarBase64;
+          await apiPut(`/doctors/${id}`, payload);
           closeEditDoctor(); render();
         } catch (err) { alert(err.message); }
       });
@@ -118,7 +148,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   render();
   window.showAddDoctor = () => document.getElementById('addDoctorModal')?.classList.add('active');
   window.closeAddDoctor = () => document.getElementById('addDoctorModal')?.classList.remove('active');
-  window.deleteDoctor = async (id, name) => { if (confirm(`ต้องการลบ ${name} ?`)) { await apiDelete(`/doctors/${id}`); render(); } };
+
+  window.filterDoctors = (query) => {
+    const q = query.toLowerCase();
+    document.querySelectorAll('.doctor-card').forEach(card => {
+      const name = card.querySelector('.doctor-name').textContent.toLowerCase();
+      if (name.includes(q)) {
+        card.style.display = 'flex'; // doctor-card usually uses flex
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  };
+  window.deleteDoctor = async (id, name) => {
+    if (confirm(`ต้องการลบ ${name} ?`)) {
+      try {
+        await apiDelete(`/doctors/${id}`);
+        render();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+  };
 
   window.editDoctor = async (id) => {
     try {
@@ -126,6 +177,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('editDocId').value = doc.id;
       document.getElementById('editDocName').value = doc.name || '';
       document.getElementById('editDocEmail').value = doc.email || '';
+      document.getElementById('editDocBranch').value = doc.branch || 'PSV01';
       document.getElementById('editDocDept').value = doc.dept || '';
       document.getElementById('editDocPosition').value = doc.position || '';
       document.getElementById('editDocSpecialty').value = doc.specialty || '';

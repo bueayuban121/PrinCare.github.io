@@ -106,7 +106,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       <div class="charts-row animate-fade-in-up delay-5">
         <div class="card chart-card"><div class="card-header"><h3>ชั่วโมงทำงานบุคคล (สัปดาห์นี้)</h3></div><div class="chart-container"><canvas id="workloadChart"></canvas></div></div>
-        <div class="card chart-card"><div class="card-header"><h3>สัดส่วนแพทย์ตามแผนก</h3></div><div class="chart-container"><canvas id="donutChart"></canvas></div></div>
+        <div class="card chart-card" style="display:flex; flex-direction:column;">
+          <div class="card-header"><h3>สัดส่วนแพทย์ตามแผนก</h3></div>
+          <div class="chart-container" style="flex:1; min-height: 200px;"><canvas id="donutChart"></canvas></div>
+          <div class="chart-legend" style="margin-top:20px; flex-shrink:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:12px; font-size:13px; color:var(--text-light); border-top: 1px solid var(--border-color); padding-top: 15px;">
+            ${stats.departments.map(d => {
+      const count = parseInt(d.actual_doctors || 0, 10);
+      if (count === 0) return '';
+      return `
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="width:10px; height:10px; border-radius:50%; background-color:${d.color}; display:inline-block; flex-shrink:0;"></span>
+                <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${d.name}">${d.name}</span>
+                <span style="font-weight:600; color:var(--text-strong);">${count} คน</span>
+              </div>
+            `}).join('')}
+          </div>
+        </div>
       </div>
     `;
 
@@ -119,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         colors: stats.workloadData.map((w, i) => ['#4A90B8', '#5AAFA0', '#F6AD55', '#9F7AEA', '#FC8181'][i % 5])
       });
       drawDonutChart(document.getElementById('donutChart'), {
-        values: stats.departments.map(d => d.actual_doctors),
+        values: stats.departments.map(d => parseInt(d.actual_doctors || 0, 10)),
         colors: stats.departments.map(d => d.color),
         labels: stats.departments.map(d => d.name)
       });
