@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
 
         <div class="charts-row animate-fade-in-up delay-5">
-          <div class="card chart-card"><div class="card-header"><h3>ชั่วโมงทำงานบุคคล (รวมทั้งหมด)</h3></div><div class="chart-container"><canvas id="workloadChart"></canvas></div></div>
+          <div class="card chart-card"><div class="card-header"><h3>ชั่วโมงทำงานบุคคล (Top 10)</h3></div><div class="chart-container"><canvas id="workloadChart"></canvas></div></div>
           <div class="card chart-card" style="display:flex; flex-direction:column;">
             <div class="card-header"><h3>สัดส่วนแพทย์ตามแผนก</h3></div>
             <div class="chart-container" style="flex:1; min-height: 200px;"><canvas id="donutChart"></canvas></div>
@@ -157,10 +157,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       setTimeout(() => {
+        const top10Workload = stats.workloadData.slice(0, 10);
         drawBarChart(document.getElementById('workloadChart'), {
-          labels: stats.workloadData.map(w => w.name.split(' ')[0]),
-          values: stats.workloadData.map(w => w.hours),
-          colors: stats.workloadData.map((w, i) => ['#4A90B8', '#5AAFA0', '#F6AD55', '#9F7AEA', '#FC8181'][i % 5])
+          labels: top10Workload.map(w => w.name.split(' ')[0]),
+          values: top10Workload.map(w => w.hours),
+          colors: top10Workload.map((w, i) => ['#4A90B8', '#5AAFA0', '#F6AD55', '#9F7AEA', '#FC8181'][i % 5])
         });
         drawDonutChart(document.getElementById('donutChart'), {
           values: stats.departments.map(d => parseInt(d.actual_doctors || 0, 10)),
